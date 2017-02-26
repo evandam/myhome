@@ -4,7 +4,7 @@
 Checkout the repository and install Python dependencies in a virtualenv.
 ```
 cd ~
-git clone https://github.com/evandam/myhome.git
+git clone --recursive https://github.com/evandam/myhome.git
 cd myhome
 virtualenv venv
 source venv/bin/activate
@@ -15,13 +15,8 @@ Install [wiringPi](http://wiringpi.com/download-and-install/)
 
 Install 433Utils:
 ```
-cd ~
-git clone --recursive git://github.com/ninjablocks/433Utils.git
 cd 433Utils/RPi_utils
 make
-cd /usr/local/bin
-sudo ln -s ~/433Utils/RPi_utils/codesend codesend
-sudo ln -s ~/433Utils/RPi_utils/RFSniffer RFSniffer
 ```
 
 Install and setup Nginx, Gunicorn, and Supervisor:
