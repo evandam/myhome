@@ -3,6 +3,8 @@ from subprocess import call
 
 logger = logging.getLogger(__name__)
 
+PULSE_WIDTH = '189'
+
 class Switch:
     '''
     Switches have an on and off switch, with corresponding RF codes to send.
@@ -16,7 +18,7 @@ class Switch:
         self.offcode = offcode
 
     def _sendcode(self, code):
-        retcode = call(['/usr/local/bin/codesend', str(code)])
+        retcode = call(['433Utils/RPi_utils/codesend', str(code), '0', PULSE_WIDTH])
         logging.info('Sent code {} for switch {}'.format(code, self.name))
         if retcode != 0:
             raise Exception('Error sending code {}'.format(code))
