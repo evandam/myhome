@@ -1,10 +1,20 @@
 # myhome
 
 ## Install
-Install [wiringPi](http://wiringpi.com/download-and-install/)
+Checkout the repository and install Python dependencies in a virtualenv.
 ```
-sudo apt-get install nginx gunicorn supervisor
+cd ~
+git clone https://github.com/evandam/myhome.git
+cd myhome
+virtualenv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
+Install [wiringPi](http://wiringpi.com/download-and-install/)
+
+Install 433Utils:
+```
 cd ~
 git clone --recursive git://github.com/ninjablocks/433Utils.git
 cd 433Utils/RPi_utils
@@ -12,14 +22,11 @@ make
 cd /usr/local/bin
 sudo ln -s ~/433Utils/RPi_utils/codesend codesend
 sudo ln -s ~/433Utils/RPi_utils/RFSniffer RFSniffer
+```
 
-cd ~
-git clone https://github.com/evandam/myhome.git
-cd myhome
-virtualenv venv
-source venv/bin/activate
-pip install -r requirements.txt
-
+Install and setup Nginx, Gunicorn, and Supervisor:
+```
+sudo apt-get install nginx gunicorn supervisor
 # Run with supervisor
 cd /etc/supervisor/conf.d
 sudo ln -s ~/myhome/supervisor.conf myhome.conf
@@ -27,7 +34,7 @@ sudo supervisorctl reread
 sudo supervisorctl update
 ```
 
-In `/etc/nginx/sites-available/myhome`, paste the following
+In `/etc/nginx/sites-available/myhome`, paste the following:
 ```
 server {
     listen 80;
@@ -49,7 +56,7 @@ server {
 }
 ```
 
-Enable the site:
+Enable the Nginx site:
 ```
 cd /etc/nginx/sites-enabled
 sudo ln -s /etc/nginx/sites-available/myhome myhome
