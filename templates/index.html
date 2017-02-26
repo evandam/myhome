@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style>
+/* Because I can't be bothered with separate files at the moment... */
+body {
+    background-color: #222;
+    color: #CCC;
+}
+.switch-ctrl {
+    width: 100%;
+}
+.alert {
+    position: fixed;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+    <div class="alert hidden" role="alert" id="status-alert">
+        <span id="alert-message"></span>
+    </div>
+
+    {% for switch in switches %}
+    <div class="text-center">
+        <div class="page-header">
+            <h2>{{ switch.name }}</h2> 
+        </div>
+        <div class="row">
+            <div class="col-xs-6">
+                <button class="btn btn-danger switch-ctrl" onclick="sendSignal({{ switch.id }}, 'OFF')">OFF</button>
+            </div>
+            <div class="col-xs-6">
+                <button class="btn btn-primary switch-ctrl" onclick="sendSignal({{ switch.id }}, 'ON')">ON</button>
+            </div>
+        </div>
+    </div>
+    {% endfor %} 
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Too lazy to pull this into its own file...
+(function(global, $) {
+
+    var statusAlert = $('#status-alert');
+
+    global.sendSignal = function(id, state) {
+        $.getJSON(['/myhome/api/switch', id, state].join('/'))
+        .then(function(data) {
+            statusAlert.removeClass('alert-danger').addClass('alert-success');
+            statusAlert.find('#alert-message').text(data.message);
+        })
+        .fail(function(data) {
+            statusAlert.removeClass('alert-success').addClass('alert-danger');
+            statusAlert.find('#alert-message').text(data.error);
+            console.log(data);
+        })
+        .always(function() {
+            statusAlert.removeClass('hidden');
+            setTimeout(function() {
+                statusAlert.addClass('hidden');
+            }, 5000);
+        }); 
+    }
+}(this, jQuery));
+</script>
+{% endblock %}
