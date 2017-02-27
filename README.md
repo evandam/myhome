@@ -62,4 +62,4 @@ You should now be able to connect to `http://localhost/myhome`. Replace `localho
 
 # Configure Switches
 Edit `switches.conf` by naming the sections as desired and using RF codes that can be found by running `433Utils/RPi_utils/RFSniffer`.
-Restart the server to see changes.
+Restart the server to see changes: `sudo supervisorctl reload myhome`
