@@ -1,4 +1,8 @@
 # myhome
+Control RF outlets over a Raspberry Pi with a 433MHz transmitter.
+Lots of libraries are already out there to do this, but this makes it all easily configurable with a config file, has a REST API (for future plans to integrate with Amazon Echo), and a light, dynamic web page. The full deployment architecture is also bundled in.
+
+The core application uses Flask to handle API calls and serve a web page. Gunicorn is used to run the application and handle things like worker threads, with supervisor in place to ensure it is always running. Nginx is the public-facing web server.
 
 ## Install
 
@@ -63,3 +67,16 @@ You should now be able to connect to `http://localhost/myhome`. Replace `localho
 # Configure Switches
 Edit `switches.conf` by naming the sections as desired and using RF codes that can be found by running `433Utils/RPi_utils/RFSniffer`.
 Restart the server to see changes: `sudo supervisorctl reload myhome`
+
+# REST API
+Enabled switches can be queried to get their IDs:
+```
+curl localhost/myhome/api/switch
+[{"id": 0, "name": "Living Room Light"}, {"id": 1, "name": "Nightstand Light"}, {"id": 2, "name": "Bedroom Window Light"}]
+```
+Switches can then be toggled on or off:
+```
+curl localhost/myhome/api/switch/0/on
+{"message": "Living Room Light turned on!", "switch": {"id": 0, "name": "Living Room Light"}, "state": "on"}
+```
+You can easily use these commands in crontab or any other automation tool to trigger turning switches on or off.
