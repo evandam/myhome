@@ -1,7 +1,15 @@
 # myhome
 
 ## Install
-Checkout the repository and install Python dependencies in a virtualenv.
+
+Install and setup Nginx, Gunicorn, and Supervisor:
+```
+sudo apt-get install nginx gunicorn supervisor
+```
+
+Install [wiringPi](http://wiringpi.com/download-and-install/) if needed.
+
+Checkout the repo and install Python dependencies in a virtualenv.
 ```
 cd ~
 git clone --recursive https://github.com/evandam/myhome.git
@@ -9,20 +17,13 @@ cd myhome
 virtualenv venv
 source venv/bin/activate
 pip install -r requirements.txt
-```
-
-Install [wiringPi](http://wiringpi.com/download-and-install/)
-
-Install 433Utils:
-```
 cd 433Utils/RPi_utils
 make
 ```
 
-Install and setup Nginx, Gunicorn, and Supervisor:
+Setup to run with supervisor (auto start/restart).
+Edit `supervisor.conf` with appropriate paths if different than `/home/pi/myhome`
 ```
-sudo apt-get install nginx gunicorn supervisor
-# Run with supervisor
 cd /etc/supervisor/conf.d
 sudo ln -s ~/myhome/supervisor.conf myhome.conf
 sudo supervisorctl reread
@@ -56,3 +57,9 @@ Enable the Nginx site:
 cd /etc/nginx/sites-enabled
 sudo ln -s /etc/nginx/sites-available/myhome myhome
 ```
+
+You should now be able to connect to `http://localhost/myhome`. Replace `localhost` with your Pi's IP address.
+
+# Configure Switches
+Edit `switches.conf` by naming the sections as desired and using RF codes that can be found by running `433Utils/RPi_utils/RFSniffer`.
+Restart the server to see changes.
