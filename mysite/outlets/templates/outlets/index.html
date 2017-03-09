@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "outlets/base.html" %}
 
 {% block css %}
 <style>
@@ -21,21 +21,21 @@ body {
         <span id="alert-message"></span>
     </div>
 
-    {% for switch in switches %}
+    {% for outlet in outlets %}
     <div class="text-center">
         <div class="page-header">
-            <h2>{{ switch.name }}</h2> 
+            <h2>{{ outlet.name }} is <span id="{{outlet.id}}-state">{{ outlet.state }}</span>!</h2>
         </div>
         <div class="row">
             <div class="col-xs-6">
-                <button class="btn btn-danger switch-ctrl" onclick="sendSignal({{ switch.id }}, 'OFF')">OFF</button>
+                <button class="btn btn-danger switch-ctrl" onclick="sendSignal({{ outlet.id }}, 'off')">OFF</button>
             </div>
             <div class="col-xs-6">
-                <button class="btn btn-primary switch-ctrl" onclick="sendSignal({{ switch.id }}, 'ON')">ON</button>
+                <button class="btn btn-primary switch-ctrl" onclick="sendSignal({{ outlet.id }}, 'on')">ON</button>
             </div>
         </div>
     </div>
-    {% endfor %} 
+    {% endfor %}
 {% endblock %}
 
 {% block scripts %}
@@ -46,9 +46,10 @@ body {
     var statusAlert = $('#status-alert');
 
     global.sendSignal = function(id, state) {
-        $.getJSON(['/myhome/api/switch', id, state].join('/'))
+        $.getJSON(['/api', id, state].join('/'))
         .then(function(data) {
             statusAlert.removeClass('alert-danger').addClass('alert-success');
+            $('#'+id+'-state').text(state);
             statusAlert.find('#alert-message').text(data.message);
         })
         .fail(function(data) {
@@ -61,7 +62,7 @@ body {
             setTimeout(function() {
                 statusAlert.addClass('hidden');
             }, 5000);
-        }); 
+        });
     }
 }(this, jQuery));
 </script>
