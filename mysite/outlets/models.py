@@ -1,9 +1,11 @@
 from django.db import models
 from subprocess import call
+import logging
+
+logger = logging.getLogger(__name__)
 
 class Outlet(models.Model):
     # Constants for calling codesend
-    _codesend = '433Utils/RPi_utils/codesend'
     _protocol = '0'
     _pulselength = '189'
 
@@ -14,10 +16,12 @@ class Outlet(models.Model):
 
     def _sendsignal(self, code, new_state):
         try:
-            call([Outlet._codesend, str(code), Outlet._protocol, Outlet._pulselength])
+            call(['codesend', str(code), Outlet._protocol, Outlet._pulselength])
             self.state = new_state
             self.save()
+            logger.info('Sent code {} successfully'.format(code))
         except Exception as e:
+            logger.exception(e)
             raise Exception('Error calling codesend!', e)
 
     def turn_on(self):

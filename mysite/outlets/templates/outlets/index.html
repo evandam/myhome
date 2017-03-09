@@ -10,17 +10,10 @@ body {
 .switch-ctrl {
     width: 100%;
 }
-.alert {
-    position: fixed;
-}
 </style>
 {% endblock %}
 
 {% block content %}
-    <div class="alert hidden" role="alert" id="status-alert">
-        <span id="alert-message"></span>
-    </div>
-
     {% for outlet in outlets %}
     <div class="text-center">
         <div class="page-header">
@@ -41,27 +34,14 @@ body {
 {% block scripts %}
 <script>
 // Too lazy to pull this into its own file...
-(function(global, $) {
-
-    var statusAlert = $('#status-alert');
-
-    global.sendSignal = function(id, state) {
+(function(window, $) {
+    window.sendSignal = function(id, state) {
         $.getJSON(['/api', id, state].join('/'))
         .then(function(data) {
-            statusAlert.removeClass('alert-danger').addClass('alert-success');
             $('#'+id+'-state').text(state);
-            statusAlert.find('#alert-message').text(data.message);
         })
         .fail(function(data) {
-            statusAlert.removeClass('alert-success').addClass('alert-danger');
-            statusAlert.find('#alert-message').text(data.error);
             console.log(data);
-        })
-        .always(function() {
-            statusAlert.removeClass('hidden');
-            setTimeout(function() {
-                statusAlert.addClass('hidden');
-            }, 5000);
         });
     }
 }(this, jQuery));
